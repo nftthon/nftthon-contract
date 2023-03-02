@@ -1,10 +1,16 @@
 # Contract for NFTthon - NFT Contests for Artists and Fans, powered by Solana
+## Chart of each primary function
+<img src="public/chart_launch.png">
+<br>
+<img src="public/chart_submit.png">
+<br>
+<img src="public/chart_vote.png">
 
 ## Test
 
 ### 1. Clone repo
 
-### 2. Add the path of your wallet in the [provider] section in Anchor.toml file, and execute the command below.
+### 2. Add the path of your `wallet` in the `[provider]` section in Anchor.toml file, and execute the command below.
 ```
 yarn
 anchor test
@@ -17,3 +23,8 @@ if a result like the below screen shot comes up, the test works.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Twitter](https://www.twitter.com/nftthon) 
 
 #### Made with :heart: in Sg :singapore:
+
+### Open Source
+This repo (NFTthon contract) is licensed under Apache 2.0.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this repo by you, as defined in the Apache-2.0 license, shall be licensed as above, without any additional terms or conditions. 

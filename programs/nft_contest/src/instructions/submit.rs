@@ -22,12 +22,12 @@ pub struct Submit<'info> {
     )]
     pub artwork: Box<Account<'info, Artwork>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
-    #[account(mint::decimals = 0)] // to prevent submission of fundible tokens with constraint of amount = 0 for token account.
+    #[account(mint::decimals = 0)]
     pub nft_mint: Account<'info, Mint>,
     #[account(
         init,
         seeds = [b"nft_vault".as_ref(), 
-            contest.key().as_ref(), 
+            contest.key().as_ref(),
             artist.key().as_ref()],
         bump,
         payer = artist,
@@ -38,7 +38,7 @@ pub struct Submit<'info> {
     #[account(mut,
         token::mint = nft_mint,
         token::authority = artist,
-        constraint = artwork_token_account.amount == 1)] // how to check if this mint is freezed and the total supply is 1.
+        constraint = artwork_token_account.amount == 1)]
     pub artwork_token_account: Account<'info, TokenAccount>,
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Program<'info, Token>,
@@ -69,11 +69,14 @@ pub fn handler(ctx: Context<Submit>) -> Result<()> {
     // put 0 as num of positive votes in contest account
     contest.artworks_vote_counter.push(0);
 
-    let (nft_vault_authority, _nft_vault_authority_bump) =
-        Pubkey::find_program_address(&[b"nft_vault_authority",
-            ctx.accounts.contest.key().as_ref(), 
-            ctx.accounts.artist.key().as_ref()], 
-            ctx.program_id); 
+    let (nft_vault_authority, _nft_vault_authority_bump) = Pubkey::find_program_address(
+        &[
+            b"nft_vault_authority",
+            ctx.accounts.contest.key().as_ref(),
+            ctx.accounts.artist.key().as_ref(),
+        ],
+        ctx.program_id,
+    );
     token::set_authority(
         ctx.accounts.into_set_authority_context(),
         AuthorityType::AccountOwner,

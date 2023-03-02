@@ -8,9 +8,6 @@ pub mod state;
 declare_id!("8wRhhgnw55z1QELi6wDoAnKbnYsU9X9U5kZnMQ12vopf");
 
 #[program]
-
-//todo withdrawal of losing nft, cancel campaign, close functions
-//todo winner nft will be sent to campaign owner
 pub mod nft_contest {
     use super::*;
 
@@ -45,7 +42,6 @@ pub mod nft_contest {
     }
 
     // function to cancel existing contest and withdrawal prize is not implemeted yet.
-
     pub fn submit(ctx: Context<Submit>) -> Result<()> {
         instructions::submit::handler(ctx)
     }

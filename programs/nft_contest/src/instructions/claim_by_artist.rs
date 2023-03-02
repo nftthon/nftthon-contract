@@ -1,7 +1,7 @@
 use crate::state::*;
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
-use solana_safe_math::SafeMath; //is this library best?
+use solana_safe_math::SafeMath;
 
 #[derive(Accounts)]
 pub struct ClaimByArtist<'info> {
@@ -44,9 +44,8 @@ pub fn handler(ctx: Context<ClaimByArtist>) -> Result<()> {
     // fetch the order and num of votes for the most voted artwork_vote_counter in contest account
     let artworks = &contest.artworks_vote_counter;
     let mut winner_artwork_num_of_votes = 0 as u64;
-    let mut winner_artwork_id = 0; // 0 should not used as artwork id
+    let mut winner_artwork_id = 0;
     for i in 0..artworks.len() as usize {
-        // if multiple artworks have equal votes?
         if artworks[i] > winner_artwork_num_of_votes {
             winner_artwork_num_of_votes = artworks[i];
             winner_artwork_id = i as u64;

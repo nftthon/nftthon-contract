@@ -14,11 +14,11 @@ pub struct Launch<'info> {
     #[account(
         init,
         seeds = [b"contest".as_ref(), 
-        contest_owner.key().as_ref(), 
-        counter.contest_count.to_string().as_ref()], // It is added for enabling contest_owner to hold multiple contests
+        contest_owner.key().as_ref(),
+        counter.contest_count.to_string().as_ref()], // contest_count is added for enabling contest_owner to hold multiple contests
         bump,
-        payer = contest_owner, 
-        space = 8 + std::mem::size_of::<Contest>() + vec_size as usize //100 is for Vec<u64>, 
+        payer = contest_owner,
+        space = 8 + std::mem::size_of::<Contest>() + vec_size as usize
     )]
     pub contest: Box<Account<'info, Contest>>,
     /// CHECK: This is not dangerous because we don't read or write from this account
@@ -27,19 +27,19 @@ pub struct Launch<'info> {
         init,
         seeds = [b"prize_vault".as_ref(),
         contest_owner.key().as_ref(),
-        counter.contest_count.to_string().as_ref()], // It is added for enabling contest_owner to hold multiple contests
+        counter.contest_count.to_string().as_ref()], // contest_count is added for enabling contest_owner to hold multiple contests
         bump,
         payer = contest_owner,
         rent_exempt = enforce,
-        token::mint = prize_mint, // no need to use associated_token?
+        token::mint = prize_mint,
         token::authority = contest_owner,
     )]
     pub prize_vault_account: Account<'info, TokenAccount>,
-    #[account(mut, 
+    #[account(mut,
         token::mint = prize_mint,
         token::authority = contest_owner)]
     pub prize_token_account: Account<'info, TokenAccount>,
-    pub rent: Sysvar<'info, Rent>, //when is "rent" necessary to include?
+    pub rent: Sysvar<'info, Rent>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
@@ -55,58 +55,66 @@ pub fn handler(
     vote_end_at: u64,
     title_of_contest: Vec<u8>,
     link_to_project: Vec<u8>,
-    vec_size: u8
+    vec_size: u8,
 ) -> Result<()> {
-        // check time order
-        let now_ts  = Clock::get().unwrap().unix_timestamp as u64;
-        msg!(&now_ts.to_string());
-        assert!(submit_start_at <= submit_end_at);
-        assert!(vote_start_at <= vote_end_at);
-        assert!(submit_start_at <= vote_start_at);
+    // check time order
+    let now_ts = Clock::get().unwrap().unix_timestamp as u64;
+    msg!(&now_ts.to_string());
+    assert!(submit_start_at <= submit_end_at);
+    assert!(vote_start_at <= vote_end_at);
+    assert!(submit_start_at <= vote_start_at);
 
-        // set data in contest account
-        ctx.accounts.contest.is_initialized = true;
-        
-        // write the current contest_count as contest_id. it means that id for the first contest is 0.
-        ctx.accounts.contest.contest_id = ctx.accounts.counter.contest_count;
-        // increase contest_count by 1
-        msg!("contestCount before plus{:?}", ctx.accounts.counter.contest_count);
-        ctx.accounts.counter.contest_count += 1;
-        msg!("contestCount after plus{:?}", ctx.accounts.counter.contest_count);
+    // set data in contest account
+    ctx.accounts.contest.is_initialized = true;
 
-        ctx.accounts.contest.contest_owner = ctx.accounts.contest_owner.key();
+    // write the current contest_count as contest_id. contest_id for the first contest is 0.
+    ctx.accounts.contest.contest_id = ctx.accounts.counter.contest_count;
+    // increase contest_count by 1
+    msg!(
+        "contestCount before plus{:?}",
+        ctx.accounts.counter.contest_count
+    );
+    ctx.accounts.counter.contest_count += 1;
+    msg!(
+        "contestCount after plus{:?}",
+        ctx.accounts.counter.contest_count
+    );
 
-        assert!(percentage_to_artist <= 100);
-        ctx.accounts.contest.prize_amount = prize_amount;
-        ctx.accounts.contest.percentage_to_artist = percentage_to_artist;
+    ctx.accounts.contest.contest_owner = ctx.accounts.contest_owner.key();
 
-        ctx.accounts.contest.submit_start_at = submit_start_at;
-        ctx.accounts.contest.submit_end_at = submit_end_at;
-        ctx.accounts.contest.vote_start_at = vote_start_at;
-        ctx.accounts.contest.vote_end_at = vote_end_at;
-        ctx.accounts.contest.title_of_contest = title_of_contest;
+    assert!(percentage_to_artist <= 100);
+    ctx.accounts.contest.prize_amount = prize_amount;
+    ctx.accounts.contest.percentage_to_artist = percentage_to_artist;
 
-        ctx.accounts.contest.artwork_count = 0;
+    ctx.accounts.contest.submit_start_at = submit_start_at;
+    ctx.accounts.contest.submit_end_at = submit_end_at;
+    ctx.accounts.contest.vote_start_at = vote_start_at;
+    ctx.accounts.contest.vote_end_at = vote_end_at;
+    ctx.accounts.contest.title_of_contest = title_of_contest;
 
-        // check if cotest owner has enough tokens for prize
-        assert!(ctx.accounts.prize_token_account.amount >= prize_amount);
-        
-        // assing the authority of prive vault account to prize vault authority
-        let (prize_vault_authority, _prize_vault_authority_bump) =
-            Pubkey::find_program_address(&[b"prize_vault_authority",
-                ctx.accounts.contest.key().as_ref(),
-                ],
-                ctx.program_id);
-        token::set_authority(
-            ctx.accounts.into_set_authority_context(),
-            AuthorityType::AccountOwner,
-            Some(prize_vault_authority),
-        )?;
+    ctx.accounts.contest.artwork_count = 0;
 
-        // transfer tokens to prize vault acount
-        token::transfer(ctx.accounts.into_transfer_to_pda_context(), prize_amount)?;
-        
-        Ok(()) 
+    // check if cotest owner has enough tokens for prize
+    assert!(ctx.accounts.prize_token_account.amount >= prize_amount);
+
+    // assing the authority of prive vault account to prize vault authority
+    let (prize_vault_authority, _prize_vault_authority_bump) = Pubkey::find_program_address(
+        &[
+            b"prize_vault_authority",
+            ctx.accounts.contest.key().as_ref(),
+        ],
+        ctx.program_id,
+    );
+    token::set_authority(
+        ctx.accounts.into_set_authority_context(),
+        AuthorityType::AccountOwner,
+        Some(prize_vault_authority),
+    )?;
+
+    // transfer tokens to prize vault acount
+    token::transfer(ctx.accounts.into_transfer_to_pda_context(), prize_amount)?;
+
+    Ok(())
 }
 
 impl<'info> Launch<'info> {

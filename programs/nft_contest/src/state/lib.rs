@@ -1,17 +1,16 @@
 use anchor_lang::prelude::*;
 
-// #[proc_macros::assert_size(120)] // +6 to make it /8 //todo: this is from farmhaus repo. what does it mean?
-#[repr(C)] //todo: why is it used?
+#[repr(C)]
 #[account]
 pub struct Counter {
-    pub is_initialized: bool, // is this necessary for security? pda is enough?
+    pub is_initialized: bool,
     pub contest_count: u64,
 }
 
 #[repr(C)]
 #[account]
 pub struct Contest {
-    pub is_initialized: bool, // is this necessary for security? pda is enough?
+    pub is_initialized: bool,
     pub contest_id: u64,
     pub contest_owner: Pubkey,
     pub prize_amount: u64,
@@ -32,14 +31,14 @@ pub struct Artwork {
     pub is_initialized: bool,
     pub artwork_id: u64,
     pub associated_contest_id: u64,
-    pub artist_key: Pubkey,            // is this necessary?
-    pub artwork_token_account: Pubkey, //is this necessary?
+    pub artist_key: Pubkey,
+    pub artwork_token_account: Pubkey,
 }
 
 #[repr(C)]
 #[account]
 pub struct VoteData {
-    pub is_initialized: bool, // is this necessary for security? pda is enough?
+    pub is_initialized: bool,
     pub voter_key: Pubkey,
     pub voted_artwork_id: u64,
 }

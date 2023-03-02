@@ -50,9 +50,8 @@ pub fn handler(ctx: Context<ClaimByVoter>) -> Result<()> {
     // fetch most voted artwork
     let artworks = &contest.artworks_vote_counter;
     let mut winner_artwork_num_of_votes = 0 as u64;
-    let mut winner_artwork_id = 0; // 0 should not used as artwork id. It is expected that 0 should be test by contest owner
+    let mut winner_artwork_id = 0;
     for i in 0..artworks.len() as usize {
-        // if multiple artworks have equal votes?
         if artworks[i] > winner_artwork_num_of_votes {
             winner_artwork_num_of_votes = artworks[i];
             winner_artwork_id = i as u64;

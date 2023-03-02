@@ -5,16 +5,14 @@ use anchor_lang::prelude::*;
 pub struct Vote<'info> {
     #[account(mut)]
     pub voter: Signer<'info>,
-    #[account(mut,
-    )]
+    #[account(mut)]
     pub artwork: Account<'info, Artwork>,
-    #[account(mut,
-        )]
+    #[account(mut)]
     pub contest: Account<'info, Contest>,
     #[account(
         init,
-        seeds = [b"vote".as_ref(), // One can vote only one time per contest.
-            contest.key().to_bytes().as_ref(), 
+        seeds = [b"vote".as_ref(), // One can vote only one time per contest with the current structure.
+            contest.key().to_bytes().as_ref(),
             voter.key.to_bytes().as_ref()],
         bump,
         payer = voter,
@@ -34,7 +32,10 @@ pub fn handler(ctx: Context<Vote>, voted_artwork_id: usize) -> Result<()> {
     // assert!(now_ts <= vote_end_at);
 
     // check if voted_artwork_id input matches with specified artwork account
-    assert!(voted_artwork_id as u64 == ctx.accounts.artwork.artwork_id, "voted_artwork_id is not correct");
+    assert!(
+        voted_artwork_id as u64 == ctx.accounts.artwork.artwork_id,
+        "voted_artwork_id is not correct"
+    );
     // check if specified artwork account and specified contest account match
     assert!(ctx.accounts.artwork.associated_contest_id == contest.contest_id);
 

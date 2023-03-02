@@ -1,11 +1,10 @@
 # Contract for NFTthon - NFT Contests for Artists and Fans, powered by Solana
-<img src="https://user-images.githubusercontent.com/90440150/222158721-6d80c9a5-eb47-402e-b57c-99ba18919573.png"/>
 
 ## Test
 
 ### 1. Clone repo
 
-### 2. Add the path of your wallet in the [provider] section in Anchor.toml file.
+### 2. Add the path of your wallet in the [provider] section in Anchor.toml file, and execute the command below.
 ```
 yarn
 anchor test

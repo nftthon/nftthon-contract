@@ -17,6 +17,7 @@ anchor test
 ```
 <br>
 if a result like the below screen shot comes up, the test works.
+<br>
 <img src="public/screenshot_of_test.png">
 <br>
 

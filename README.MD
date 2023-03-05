@@ -8,7 +8,7 @@
 
 ## Test
 
-### 1. Clone repo
+### 1. Clone repo  
 
 ### 2. Add the path of your `wallet` in the `[provider]` section in Anchor.toml file, and execute the command below.
 ```

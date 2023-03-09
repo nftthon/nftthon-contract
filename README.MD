@@ -6,7 +6,7 @@
 <br>
 <img src="public/chart_vote.png">
 
-## Test
+## How to Test
 
 ### 1. Clone repo
 
@@ -15,7 +15,7 @@
 yarn
 anchor test
 ```
-if a result like the below screen shot comes up, the test works.
+Test with Anchor is expected to work as below.
 <img src="public/screenshot_of_test.png">
 
 📫 How to reach us: :call_me_hand: <br>

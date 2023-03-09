@@ -41,7 +41,6 @@ pub mod nft_contest {
         )
     }
 
-    // function to cancel existing contest and withdrawal prize is not implemeted yet.
     pub fn submit(ctx: Context<Submit>) -> Result<()> {
         instructions::submit::handler(ctx)
     }
@@ -56,5 +55,9 @@ pub mod nft_contest {
 
     pub fn claim_by_voter(ctx: Context<ClaimByVoter>) -> Result<()> {
         instructions::claim_by_voter::handler(ctx)
+    }
+
+    pub fn claim_by_contest_owner(ctx: Context<ClaimByContestOwner>) -> Result<()> {
+        instructions::claim_by_contest_owner::handler(ctx)
     }
 }

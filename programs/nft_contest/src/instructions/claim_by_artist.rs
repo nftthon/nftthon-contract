@@ -26,7 +26,7 @@ pub struct ClaimByArtist<'info> {
         token::mint = prize_mint,
         token::authority = artist)]
     pub artist_token_account: Account<'info, TokenAccount>,
-    pub rent: Sysvar<'info, Rent>, //when is this required to include?
+    pub rent: Sysvar<'info, Rent>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }

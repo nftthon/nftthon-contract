@@ -44,6 +44,7 @@ describe("nft_contest", () => {
   let nftMint = null;
   let nftMint2 = null;
   let contestOwnerPrizeTokenAccount = null;
+  let contestOwnerNftTokenAccount = null;
   let artist1NftAccount = null;
   let artist1PrizeTokenAccount = null;
   let artist2NftAccount = null;
@@ -64,6 +65,8 @@ describe("nft_contest", () => {
   let _artworkBump = null;
   let nftVaultPda = null;
   let _nftVaultBump = null;
+  let nftVaultAuthorityPda = null;
+  let _nftVaultAuthorityBump = null;
   let voteDataPda = null;
   let _voteDataBump = null;
 
@@ -292,7 +295,7 @@ describe("nft_contest", () => {
         contestPda.toBuffer(), 
         artist1.publicKey.toBuffer()
       ], program.programId);
-      const [nftVaultPda, _nftVaultBump] = PublicKey.findProgramAddressSync(
+      [nftVaultPda, _nftVaultBump] = PublicKey.findProgramAddressSync(
         [Buffer.from(anchor.utils.bytes.utf8.encode("nft_vault")),
         contestPda.toBuffer(),
         artist1.publicKey.toBuffer()
@@ -364,7 +367,7 @@ describe("nft_contest", () => {
       console.log("nft vault token account's amount", _nftVaultAccount.amount.toString())
       assert.ok(_nftVaultAccount.amount == BigInt(1));
 
-      const [nftVaultAuthorityPda, _nftVautAuthorityBump] = PublicKey.findProgramAddressSync(
+      [nftVaultAuthorityPda, _nftVaultAuthorityBump] = PublicKey.findProgramAddressSync(
         [Buffer.from(anchor.utils.bytes.utf8.encode("nft_vault_authority")),
         contestPda.toBuffer(),
         artist1.publicKey.toBuffer()
@@ -615,6 +618,47 @@ describe("nft_contest", () => {
       let _voterTokenAccount = await getAccount(connection, voter1TokenAccount.address);
       console.log("voter token account's amount", _voterTokenAccount.amount.toString())
       // assert.ok(_voterTokenAccount.amount == prizeAmount.toNumber() * (100 - percentageToArtist) / winnerNumVote / 100);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  )
+
+  it("Claim an NFT by contest owner", async () => {
+    try {
+      contestOwnerNftTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        contestOwner,
+        nftMint,
+        contestOwner.publicKey
+        );
+
+      const ix = await program.methods.claimByContestOwner()
+      .accounts(
+        {
+        contestOwner: contestOwner.publicKey,
+        contest: contestPda,
+        artwork: artworkPda,
+        nftMint: nftMint,
+        nftVaultAccount: nftVaultPda,
+        nftVaultAuthority: nftVaultAuthorityPda,
+        contestOwnerNftTokenAccount: contestOwnerNftTokenAccount.address,
+        rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        systemProgram: SystemProgram.programId,
+      })
+      .signers([contestOwner])
+      .rpc();
+
+    
+      // assertion
+      let _nftVaultAccount = await getAccount(connection, nftVaultPda);
+      console.log("nft vault token account's amount", _nftVaultAccount.amount.toString())
+      assert.ok(_nftVaultAccount.amount == BigInt(0));
+
+      let _contestOwnerNftTokenAccount = await getAccount(connection, contestOwnerNftTokenAccount.address);
+      console.log("contest owner's nft token account's amount", _contestOwnerNftTokenAccount.amount.toString())
+      assert.ok(_contestOwnerNftTokenAccount.amount == BigInt(1));
     } catch (error) {
       console.log(error)
     }

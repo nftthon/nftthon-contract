@@ -15,7 +15,7 @@
 yarn
 anchor test
 ```
-Anchor test is expected to work as below.
+### then, Anchor test is expected to work as below.
 <img src="public/screenshot_of_test.png">
 <br>
 

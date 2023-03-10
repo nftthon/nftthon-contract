@@ -15,13 +15,9 @@
 yarn
 anchor test
 ```
-if a result like the below screen shot comes up, the test works.
+Anchor test is expected to work as below.
 <img src="public/screenshot_of_test.png">
 <br>
-
-📫 How to reach us: :call_me_hand: <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Email](nfthon@gmail.com)
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Twitter](https://www.twitter.com/nftthon) 
 
 #### Made with :heart: in Sg :singapore:
 
